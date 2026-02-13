@@ -1,162 +1,137 @@
-# WO-MCP-001: BingX MCP Server
+# WO-MCP-001: BingX MCP Server - ACTIVE
 
-**Status:** Planned  
-**Priority:** 1 (Highest)  
-**Estimated Time:** 5-7 days  
-**Competition:** NONE (first to market!)  
-
----
-
-## 🎯 Objective
-
-Build the FIRST dedicated BingX MCP server. Zero competition exists - only generic CCXT wrapper covers BingX indirectly.
+**Status:** 🟢 IN PROGRESS  
+**Assigned:** CC (Claude Code)  
+**Mode:** BRRR MODE (autonomous, no approval needed)  
+**Started:** 2026-02-13  
+**Target:** 2026-02-20 (7 days)  
 
 ---
 
-## 📋 Requirements
+## 🎯 MISSION
 
-### Tier 1: Market Data Tools (FREE)
+Build the FIRST dedicated BingX MCP server. Ship to Apify within 7 days.
 
-| Tool | Description | Endpoint |
-|------|-------------|----------|
-| `get_ticker` | Current price for symbol | GET /openApi/swap/v2/quote/ticker |
-| `get_orderbook` | Order book depth | GET /openApi/swap/v2/quote/depth |
-| `get_klines` | OHLCV candlesticks | GET /openApi/swap/v2/quote/klines |
-| `get_trades` | Recent trades | GET /openApi/swap/v2/quote/trades |
-| `get_funding_rate` | Current funding rate | GET /openApi/swap/v2/quote/fundingRate |
-| `list_symbols` | Available trading pairs | GET /openApi/swap/v2/quote/contracts |
-
-### Tier 2: Account Tools (FREE)
-
-| Tool | Description | Endpoint |
-|------|-------------|----------|
-| `get_balance` | Account balance | GET /openApi/swap/v2/user/balance |
-| `get_positions` | Open positions | GET /openApi/swap/v2/user/positions |
-| `get_open_orders` | Active orders | GET /openApi/swap/v2/trade/openOrders |
-| `get_order_history` | Past orders | GET /openApi/swap/v2/trade/allOrders |
-| `get_trade_history` | Executed trades | GET /openApi/swap/v2/trade/allFillOrders |
-
-### Tier 3: Trading Tools (PAID - €0.005/action)
-
-| Tool | Description | Endpoint | Confirmation |
-|------|-------------|----------|-------------|
-| `place_order` | Create new order | POST /openApi/swap/v2/trade/order | ✅ REQUIRED |
-| `cancel_order` | Cancel order | DELETE /openApi/swap/v2/trade/order | ✅ REQUIRED |
-| `cancel_all_orders` | Cancel all orders | DELETE /openApi/swap/v2/trade/allOpenOrders | ✅ REQUIRED |
-| `close_position` | Close position | POST /openApi/swap/v2/trade/closePosition | ✅ REQUIRED |
-
-### Tier 4: Advanced Tools (PAID - €0.01/action)
-
-| Tool | Description | Endpoint | Confirmation |
-|------|-------------|----------|-------------|
-| `set_leverage` | Change leverage | POST /openApi/swap/v2/trade/leverage | ✅ REQUIRED |
-| `set_margin_mode` | Isolated/Cross | POST /openApi/swap/v2/trade/marginType | ✅ REQUIRED |
-| `place_batch_orders` | Multiple orders | POST /openApi/swap/v2/trade/batchOrders | ✅ REQUIRED |
+**Zero competition = first mover advantage. JUST BUILD IT.**
 
 ---
 
-## 🔧 Technical Specs
+## 📋 BRRR MODE RULES
 
-### Authentication
-
-```typescript
-interface BingXAuth {
-  apiKey: string;      // User provides
-  secretKey: string;   // User provides  
-  testnet?: boolean;   // Default: false
-}
-
-// Signature generation
-function sign(params: Record<string, any>, secret: string): string {
-  const queryString = Object.entries(params)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([k, v]) => `${k}=${v}`)
-    .join('&');
-  return crypto.createHmac('sha256', secret)
-    .update(queryString)
-    .digest('hex');
-}
-```
-
-### Rate Limits
-
-- **Orders:** 100 requests per 10 seconds
-- **Market Data:** 500 requests per minute
-- **Weight System:** Each endpoint has weight, total <= 2400/min
-
-### Error Handling
-
-```typescript
-const BINGX_ERRORS: Record<number, string> = {
-  100001: 'Signature verification failed',
-  100500: 'Internal server error',
-  80001: 'Request too frequent',
-  80012: 'Insufficient balance',
-  80014: 'Order does not exist',
-};
-```
+1. **NO ASKING PERMISSION** - just build
+2. **NO WAITING FOR APPROVAL** - commit and push
+3. **DECISIONS = YOURS** - pick the best option and go
+4. **STUCK > 30 MIN?** - leave TODO comment, move on
+5. **DONE > PERFECT** - ship fast, iterate later
 
 ---
 
-## 📁 File Structure
+## ✅ CHECKLIST (in order)
+
+### Phase 1: Setup (Day 1)
+- [ ] Initialize TypeScript project in `packages/bingx-mcp/`
+- [ ] Set up Apify Actor structure (`apify.json`, `INPUT_SCHEMA.json`)
+- [ ] Create shared utilities in `packages/shared/`
+- [ ] Basic MCP server skeleton with health check
+
+### Phase 2: Market Data - FREE tier (Day 2-3)
+- [ ] `get_ticker` - current price
+- [ ] `get_orderbook` - order book depth  
+- [ ] `get_klines` - OHLCV candlesticks
+- [ ] `get_trades` - recent trades
+- [ ] `get_funding_rate` - funding rate
+- [ ] `list_symbols` - available pairs
+
+### Phase 3: Account Data - FREE tier (Day 3-4)
+- [ ] `get_balance` - account balances
+- [ ] `get_positions` - open positions
+- [ ] `get_open_orders` - active orders
+- [ ] `get_order_history` - past orders
+
+### Phase 4: Trading - PAID tier (Day 4-5)
+- [ ] `place_order` - create order (with confirmation!)
+- [ ] `cancel_order` - cancel order
+- [ ] `close_position` - close position
+- [ ] Apify monetization events (€0.005/trade)
+
+### Phase 5: Polish & Deploy (Day 6-7)
+- [ ] Rate limiting implementation
+- [ ] Error handling for all BingX error codes
+- [ ] MCP Inspector testing
+- [ ] README with setup instructions
+- [ ] Deploy to Apify
+- [ ] List on directories (Smithery, PulseMCP, mcp.so, Glama)
+
+---
+
+## 🔧 TECHNICAL DECISIONS (CC decides)
+
+| Decision | Options | CC picks |
+|----------|---------|----------|
+| HTTP client | fetch / axios / got | ? |
+| Rate limiter | custom / bottleneck / p-limit | ? |
+| Testing | vitest / jest / none initially | ? |
+| Logging | console / pino / winston | ? |
+
+**Rule:** Pick one, document in code, move on.
+
+---
+
+## 📁 FILE STRUCTURE TO CREATE
 
 ```
 packages/bingx-mcp/
 ├── src/
-│   ├── index.ts           # Main entry, MCP server setup
+│   ├── index.ts           # MCP server entry
 │   ├── tools/
-│   │   ├── market.ts      # Market data tools
-│   │   ├── account.ts     # Account tools
-│   │   ├── trading.ts     # Trading tools (paid)
-│   │   └── advanced.ts    # Advanced tools (paid)
+│   │   ├── market.ts      # Tier 1: Market data
+│   │   ├── account.ts     # Tier 2: Account data
+│   │   └── trading.ts     # Tier 3-4: Trading
 │   ├── api/
-│   │   ├── client.ts      # BingX API client
-│   │   ├── auth.ts        # Authentication
-│   │   └── types.ts       # API response types
+│   │   ├── client.ts      # BingX REST client
+│   │   ├── auth.ts        # HMAC-SHA256 signing
+│   │   └── types.ts       # TypeScript types
 │   └── utils/
 │       ├── rate-limiter.ts
 │       └── errors.ts
-├── apify.json             # Apify Actor config
-├── INPUT_SCHEMA.json      # Actor input schema
+├── apify.json
+├── INPUT_SCHEMA.json
 ├── package.json
 ├── tsconfig.json
 └── README.md
+
+packages/shared/
+├── src/
+│   ├── index.ts
+│   ├── confirmation.ts    # Human-in-the-loop helper
+│   └── monetization.ts    # Apify billing helper
+└── package.json
 ```
 
 ---
 
-## ✅ Acceptance Criteria
+## 🔗 RESOURCES
 
-1. [ ] All Tier 1 tools implemented and tested
-2. [ ] All Tier 2 tools implemented and tested
-3. [ ] All Tier 3 tools with human confirmation
-4. [ ] Rate limiting prevents API bans
-5. [ ] Error messages are user-friendly
-6. [ ] Works with MCP Inspector
-7. [ ] Deployed to Apify with monetization
-8. [ ] Listed on 4+ MCP directories
-9. [ ] README with clear setup instructions
-10. [ ] No security vulnerabilities
+- **BingX API Docs:** https://bingx-api.github.io/docs/
+- **MCP TypeScript SDK:** https://github.com/modelcontextprotocol/typescript-sdk
+- **Apify Actor Guide:** https://docs.apify.com/platform/actors
+- **MCP Inspector:** `npx @modelcontextprotocol/inspector`
 
 ---
 
-## 🚀 Marketing
+## 📊 PROGRESS LOG
 
-**Tagline:** "The first and only dedicated BingX MCP server - purpose-built, not a CCXT wrapper"
-
-**Launch Channels:**
-- Reddit: r/BingX, r/algotrading, r/CryptoCurrency
-- Twitter/X: Tag @BingXOfficial
-- Apify Store
-- MCP Directories (Smithery.ai, PulseMCP, mcp.so, Glama.ai)
+| Date | What got done |
+|------|---------------|
+| 2026-02-13 | WO created, repo setup |
+| ... | CC fills this in |
 
 ---
 
-## 📊 Success Metrics
+## 🚨 BLOCKERS
 
-| Metric | Week 1 | Month 1 | Month 3 |
-|--------|--------|---------|--------|
-| Installs | 50 | 200 | 500 |
-| Active users | 10 | 50 | 150 |
-| Paid events | 100 | 1000 | 5000 |
-| Revenue | €5 | €50 | €250 |
+_None yet. CC adds here if stuck._
+
+---
+
+**REMEMBER: BRRR MODE = NO PERMISSION NEEDED. JUST SHIP IT.** 🖨️💰
