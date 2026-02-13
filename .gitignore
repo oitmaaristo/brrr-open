@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.js
+*.d.ts
+*.js.map
+!jest.config.js
+!*.config.js
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Apify
+apify_storage/
+storage/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+coverage/
+
+# API Keys (NEVER COMMIT!)
+*.key
+*.secret
+credentials.json
