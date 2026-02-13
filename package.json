@@ -1,0 +1,30 @@
+{
+  "name": "brrr-mcp-servers",
+  "version": "0.1.0",
+  "description": "BRRR Capital MCP Server Suite - Trading exchange integrations for AI assistants",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "eslint packages/*/src/**/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oitmaaristo/brrr-mcp-servers.git"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol", 
+    "trading",
+    "crypto",
+    "bingx",
+    "mexc",
+    "kraken",
+    "apify"
+  ],
+  "author": "BRRR Capital",
+  "license": "MIT"
+}
