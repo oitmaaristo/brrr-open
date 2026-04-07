@@ -46,6 +46,17 @@ credentials.json
 *.mp4
 *.wav
 *.m4a
+
+# Temp/scratch
+RSaS/
+*.bak
+*.pdf
+
+# CC memory (local)
 CLAUDE.md
+.claude/
+
+# Legacy
 Ehituspakkumised/
 Trading in the Zone.txt
+tiktoken-mcp/
